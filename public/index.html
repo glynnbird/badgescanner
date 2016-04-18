@@ -17,13 +17,43 @@
       </a>
 
       <div class="menu">
-        <a href="#" class="button">Settings</a>
+        <label for="modal_1" class="button">Settings</label>
       </div>
     </nav>
     
     <div id="outdiv"></div>
     <div id="result"></div>
     <div id="thetable"></div>    
+    
+    
+
+    <div class="modal">
+      <input id="modal_1" type="checkbox" />
+      <label for="modal_1" class="overlay"></label>
+      <article>
+        <header>
+          <h3>Replication</h3>
+          <label for="modal_1" class="close">&times;</label>
+        </header>
+        <section class="content">
+          <div>Save your data to a remote Apache CouchDB or IBM Cloudant database. Simply enter the URL of your instance in the box below and tap the "Replicate" button.</div>
+          <div class="eg"> e.g. https://mycouchdb.instance.com/mydatabase</div>
+          <div class="eg"> e.g. https://myusername:mypassword@myaccount.cloudant.com/mydatabase</div>
+           
+          
+          <label for"url">Remote URL</label>
+          <input id="url" type="url">
+          <button class="warning" onclick="replicate()">Replicate</button>
+          <div id="replicationstatus"></div>
+          <hr />
+        </section>
+        <footer>
+          <label for="modal_1" class="button">
+            Ok
+          </label>
+        </footer>
+      </article>
+    </div>
     
     <audio id="myAudio">
       <source src="/sound/beep.mp3" type="audio/mpeg">

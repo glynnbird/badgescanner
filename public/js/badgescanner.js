@@ -110,7 +110,6 @@ var renderTable = function() {
     }
   };
   db.query("query/byts", {descending:true, include_docs:true} ).then(function (result) {
-    console.log("query", result);
     var html = '<table class="primary">';
     html += '<thead><tr>';
     html += '<th>fn</th>';
@@ -121,11 +120,9 @@ var renderTable = function() {
     html += '<th>adr</th>';
     html += '</tr></thead>';
     html += '<tbody>';
-    console.log(result);
     for(var i in result.rows) {
       var d = result.rows[i].doc;
       if (d) {
-        console.log(d);
         html += '<tr>';
         html += '<td>' + d.fn + '</td>';
         html += '<td>' + d.title + '</td>';
@@ -145,6 +142,24 @@ var renderTable = function() {
 };
 
 
+var replicate = function() {
+  document.getElementById("replicationstatus").innerHTML="";
+  var url = document.getElementById("url").value;
+  if(url) {
+    var remoteDB = new PouchDB(url);
+    db.replicate.to(remoteDB)
+      .on("change", function(info) { 
+        document.getElementById("replicationstatus").innerHTML = "IN PROGRESS - " + info.docs_written; 
+      })
+      .on("complete", function(info) { 
+        document.getElementById("replicationstatus").innerHTML = "COMPLETE - " + info.docs_written;
+      })
+      .on("error",  function(err) { 
+        document.getElementById("replicationstatus").innerHTML = "ERROR - " + JSON.strinfify(err);
+      });
+  }
+};
+
 qrcode.callback = function(data) {
 //  clearInterval(interval);
   var myAudio = document.getElementById("myAudio"); 
@@ -156,7 +171,6 @@ qrcode.callback = function(data) {
   var d = new Date();
   vcard.ts = d.getTime();
   vcard.date = d.toISOString();
-  console.log(vcard);
   db.post(vcard).then(function (response) {
     // handle response
     renderTable();
