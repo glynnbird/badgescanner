@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>badgescanner</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="css/picnic.css">
+    <link rel="stylesheet" href="css/badgescanner.css">
+  </head>
+
+  <body>
+    <nav class="demo">
+      <a href="/" class="brand">
+        <img class="logo" src="/img/logo.png" />
+        <span>badgescanner</span>
+      </a>
+
+      <div class="menu">
+        <a href="#" class="button">Settings</a>
+      </div>
+    </nav>
+    
+    <div id="outdiv"></div>
+    <div id="result"></div>
+    <div id="thetable"></div>    
+    
+    <audio id="myAudio">
+      <source src="/sound/beep.mp3" type="audio/mpeg">
+    </audio>
+    
+    <canvas id="qr-canvas" width="500px" height="500px"></canvas>
+
+    <script type="text/javascript" src="js/qrcode.js"></script>
+    <!-- http://jsfiddle.net/ARTsinn/P2t2P/ -->
+    <script type="text/javascript" src="js/vcard.js"></script>
+    <!-- http://pouchdb.com -->
+    <script type="text/javascript" src="js/pouchdb-5.3.1.min.js"></script>
+    <script type="text/javascript" src="js/badgescanner.js"></script>
+
+  </body>
+</html>
