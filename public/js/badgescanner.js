@@ -5,6 +5,8 @@ var gUM=false
 var webkit = false;
 var moz = false;
 var v = null;
+var n = null;
+var interval = null;
 
 var initCanvas = function (w,h)
 {
@@ -45,32 +47,7 @@ var captureToCanvas = function() {
       console.log(e);
     };
   }
-}
-
-
-initCanvas(500,500);
-
-document.getElementById("result").innerHTML="";
-var n=navigator;
-document.getElementById("outdiv").innerHTML = '<video id="v" autoplay></video>';
-v=document.getElementById("v");
-
-if (n.getUserMedia) {
-  n.getUserMedia({video: true, audio: false}, success, error);
-} else if (n.mediaDevices.getUserMedia) {
-  n.mediaDevices.getUserMedia({video: { facingMode: "environment"} , audio: false})
-      .then(success)
-      .catch(error);
-} else if (n.webkitGetUserMedia) {
-  webkit=true;
-  n.webkitGetUserMedia({video:true, audio: false}, success, error);
-} else if (n.mozGetUserMedia) {
-  moz=true;
-  n.mozGetUserMedia({video: true, audio: false}, success, error);
-}
-stype=1;
-
-var interval = setInterval(captureToCanvas, 500);
+};
 
 var simplify = function(x) {
   if (!x) {
@@ -99,6 +76,7 @@ var ddoc = {
     }
   }
 };
+
 db.put(ddoc).catch(function (err) {
   // ignore if doc already exists
 })
@@ -110,30 +88,34 @@ var renderTable = function() {
     }
   };
   db.query("query/byts", {descending:true, include_docs:true} ).then(function (result) {
-    var html = '<table class="primary">';
-    html += '<thead><tr>';
-    html += '<th>fn</th>';
-    html += '<th>title</th>';
-    html += '<th>org</th>';
-    html += '<th>tel</th>';
-    html += '<th>email</th>';
-    html += '<th>adr</th>';
-    html += '</tr></thead>';
-    html += '<tbody>';
-    for(var i in result.rows) {
-      var d = result.rows[i].doc;
-      if (d) {
-        html += '<tr>';
-        html += '<td>' + d.fn + '</td>';
-        html += '<td>' + d.title + '</td>';
-        html += '<td>' + d.org + '</td>';
-        html += '<td>' + d.tel + '</td>';
-        html += '<td>' + d.email + '</td>';
-        html += '<td>' + d.adr + '</td>';
-        html += '</tr>';
-      }
-    }    
-    html += '</tbody></table>';
+    if(result.rows.length>0) {
+      var html = '<table class="primary">';
+      html += '<thead><tr>';
+      html += '<th>fn</th>';
+      html += '<th>title</th>';
+      html += '<th>org</th>';
+      html += '<th>tel</th>';
+      html += '<th>email</th>';
+      html += '<th>adr</th>';
+      html += '</tr></thead>';
+      html += '<tbody>';
+      for(var i in result.rows) {
+        var d = result.rows[i].doc;
+        if (d) {
+          html += '<tr>';
+          html += '<td>' + d.fn + '</td>';
+          html += '<td>' + d.title + '</td>';
+          html += '<td>' + d.org + '</td>';
+          html += '<td>' + d.tel + '</td>';
+          html += '<td>' + d.email + '</td>';
+          html += '<td>' + d.adr + '</td>';
+          html += '</tr>';
+        }
+      }    
+      html += '</tbody></table>';
+    } else {
+      html = "";
+    }
     document.getElementById("thetable").innerHTML=html;
     // handle result
   }).catch(function (err) {
@@ -161,7 +143,7 @@ var replicate = function() {
 };
 
 qrcode.callback = function(data) {
-//  clearInterval(interval);
+  clearInterval(interval);
   var myAudio = document.getElementById("myAudio"); 
   myAudio.play();
   var vcard = vcardParse(data);
@@ -174,9 +156,46 @@ qrcode.callback = function(data) {
   db.post(vcard).then(function (response) {
     // handle response
     renderTable();
+    
+    // prevent same one getting scanned twice.
+    setTimeout(function() {
+      interval = setInterval(captureToCanvas, 500);      
+    },1500);
+    
   }).catch(function (err) {
     console.log(err);
   });
 };
 
-renderTable();
+
+
+window.addEventListener("DOMContentLoaded", function() {
+
+  initCanvas(500,500);
+
+  document.getElementById("result").innerHTML="";
+  n=navigator;
+  document.getElementById("outdiv").innerHTML = '<video id="v" autoplay></video>';
+  v=document.getElementById("v");
+
+
+  if (n.getUserMedia) {
+    n.getUserMedia({video: true, audio: false}, success, error);
+  } else if (n.mediaDevices && n.mediaDevices.getUserMedia) {
+    n.mediaDevices.getUserMedia({video: { facingMode: "environment"} , audio: false})
+        .then(success)
+        .catch(error);
+  } else if (n.webkitGetUserMedia) {
+    webkit=true;
+   // document.getElementById("extras").innerHTML = x[1 % L];
+    n.webkitGetUserMedia({video:true, audio: false}, success, error);
+  } else if (n.mozGetUserMedia) {
+    moz=true;
+    n.mozGetUserMedia({video: true, audio: false}, success, error);
+  }
+  stype=1;
+  interval= setInterval(captureToCanvas, 500);
+
+  renderTable();
+
+});
