@@ -1,14 +1,13 @@
-# Node.js Starter Overview
+# badgescanner
 
-The Node.js Starter demonstrates a simple, reusable Node.js web application based on the Express framework.
+![badgescanner gif](https://i.gyazo.com/4e908897189432735395f70cc95bf80b.gif)
 
-## Run the app locally
+A Node.js web app that captures your web cam feed and looks for QR-codes that you offer to it.
 
-1. [Install Node.js][]
-2. Download and extract the starter code from the Bluemix UI
-3. cd into the app directory
-4. Run `npm install` to install the app's dependencies
-5. Run `npm start` to start the app
-6. Access the running app in a browser at http://localhost:6001
+If it finds a vCard encoded in the QR code, it is converted to JSON and stored in PouchDB where it can be synced to a remote Apache CouchDB or Cloudant database.
 
-[Install Node.js]: https://nodejs.org/en/download/
+This app is an offline-first app so once loaded, it should continue to work with or without a network connection.
+
+## Demo
+
+https://badgescanner.mybluemix.net
