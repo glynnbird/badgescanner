@@ -161,7 +161,7 @@ qrcode.callback = function(data) {
   var d = new Date();
   vcard.ts = d.getTime();
   vcard.date = d.toISOString();
-  console.log("accepted", vcard)
+  console.log("accepted", JSON.stringify(vcard));
    
   // play audio
   var myAudio = document.getElementById("beep"); 
