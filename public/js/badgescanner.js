@@ -86,7 +86,7 @@ var renderTable = function() {
       html += '<th>org</th>';
       html += '<th>tel</th>';
       html += '<th>email</th>';
-      html += '<th>adr</th>';
+      html += '<th>url</th>';
       html += '</tr></thead>';
       html += '<tbody>';
       for(var i in result.rows) {
@@ -98,7 +98,7 @@ var renderTable = function() {
           html += '<td>' + d.org + '</td>';
           html += '<td>' + d.tel + '</td>';
           html += '<td>' + d.email + '</td>';
-          html += '<td>' + d.adr + '</td>';
+          html += '<td>' + d.url + '</td>';
           html += '</tr>';
         }
       }    
@@ -134,30 +134,39 @@ var replicate = function() {
 
 // called when a qrcode is detected
 qrcode.callback = function(data) {
-  console.log("!!",(new Date()).getTime());
+  console.log(data);
+  
   // create vcard object
   var vcard = vcardParse(data);
-  vcard.tel = simplify(vcard.tel);
-  vcard.email = simplify(vcard.email);
-  vcard.adr = simplify(vcard.adr);
+  if (!vcard) { 
+    // if we got here, then "data" isn't a vcard
+    if (lastvcard && lastvcard == data) {
+      console.log("rejected - we just had that one", data);
+      return;      
+    }
+    vcard = { url: data};
+    lastvcard = data;
+  } else {    
+    if (lastvcard && vcard.fn == lastvcard.fn) {
+      console.log("rejected - we just had that one", vcard.fn);
+      return;
+    }
+    vcard.tel = simplify(vcard.tel);
+    vcard.email = simplify(vcard.email);
+    vcard.adr = simplify(vcard.adr);  
+    lastvcard = vcard;
+  }
+  
+  // add timestampss
   var d = new Date();
   vcard.ts = d.getTime();
   vcard.date = d.toISOString();
-  
-  if (lastvcard && vcard.fn == lastvcard.fn) {
-    console.log("rejected - we just had that one", vcard.fn);
-    return;
-  }
-  
   console.log("accepted", vcard)
    
   // play audio
   var myAudio = document.getElementById("beep"); 
   myAudio.play();
-   
-  // keep last vcard to debounce
-  lastvcard = vcard;
-  
+     
   // saved to database
   db.post(vcard).then(function (response) {
     

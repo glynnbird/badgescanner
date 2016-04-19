@@ -1,5 +1,5 @@
 var vcardParse = function (input) {
-    var Re1 = /^(version|fn|title|org):(.+)$/i;
+    var Re1 = /^(version|fn|title|org|url):(.+)$/i;
     var Re2 = /^([^:;]+);([^:]+):(.+)$/;
     var ReKey = /item\d{1,2}\./;
     var fields = {};
@@ -37,6 +37,10 @@ var vcardParse = function (input) {
             })
         }
     });
-
-    return fields;
+    
+    if (fields.version) {
+      return fields;
+    } else {
+      return null;
+    }
 };
