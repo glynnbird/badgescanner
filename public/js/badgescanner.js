@@ -1,25 +1,19 @@
-var gCtx = null;
-var gCanvas = null;
-var stype = 0;
-var gUM=false
-var webkit = false;
-var moz = false;
-var v = null;
-var n = null;
-var interval = null;
+var gUM=false;
+var db = null;
+var lastvcard = null;
 
-var initCanvas = function (w,h)
-{
-    gCanvas = document.getElementById("qr-canvas");
-    gCanvas.style.width = w + "px";
-    gCanvas.style.height = h + "px";
-    gCanvas.width = w;
-    gCanvas.height = h;
-    gCtx = gCanvas.getContext("2d");
-    gCtx.clearRect(0, 0, w, h);
+var initCanvas = function (w,h) {
+  var gCanvas = document.getElementById("qr-canvas");
+  gCanvas.style.width = w + "px";
+  gCanvas.style.height = h + "px";
+  gCanvas.width = w;
+  gCanvas.height = h;
+  var gCtx = gCanvas.getContext("2d");
+  gCtx.clearRect(0, 0, w, h);
 };
 
 var success = function(stream) {
+  var v=document.getElementById("v");
   v.src = window.URL.createObjectURL(stream);
   gUM=true;
 };
@@ -30,21 +24,11 @@ var error = function(e) {
 };
 
 var captureToCanvas = function() {
-  if(stype!=1)
-      return;
-  if(gUM)
-  {
-    try{
-      gCtx.drawImage(v,0,0);
-      try{
-        qrcode.decode();
-      }
-      catch(e){       
-        console.log(e);
-      };
-    }
-    catch(e){       
-      console.log(e);
+  if (gUM) {
+    try {
+      document.getElementById("qr-canvas").getContext("2d").drawImage(v,0,0);
+      qrcode.decode();
+    } catch(e) {       
     };
   }
 };
@@ -62,24 +46,30 @@ var simplify = function(x) {
   return y.join(",");
 }
 
-var db = new PouchDB("badgescanner");
-var ddoc = {
-  _id: '_design/query',
-  views: {
-    byts: {
-      map: function (doc) {
-        if (typeof doc.ts != "number") {
-          doc.ts = 0;
-        }
-        emit(doc.ts,null);      
-      }.toString()
-    }
-  }
-};
 
-db.put(ddoc).catch(function (err) {
-  // ignore if doc already exists
-})
+var createDatabase = function(callback) {
+ db = new PouchDB("badgescanner");
+ var ddoc = {
+   _id: '_design/query',
+   views: {
+     byts: {
+       map: function (doc) {
+         if (typeof doc.ts != "number") {
+           doc.ts = 0;
+         }
+         emit(doc.ts,null);      
+       }.toString()
+     }
+   }
+ };
+
+ db.put(ddoc).then(function (data) {
+   callback(null, data);
+ }).catch(function (err) {
+   callback(null, null);
+ });
+}
+
 
 var renderTable = function() {
   var fn = function(doc) {
@@ -142,10 +132,10 @@ var replicate = function() {
   }
 };
 
+// called when a qrcode is detected
 qrcode.callback = function(data) {
-  clearInterval(interval);
-  var myAudio = document.getElementById("myAudio"); 
-  myAudio.play();
+  console.log("!!",(new Date()).getTime());
+  // create vcard object
   var vcard = vcardParse(data);
   vcard.tel = simplify(vcard.tel);
   vcard.email = simplify(vcard.email);
@@ -153,49 +143,63 @@ qrcode.callback = function(data) {
   var d = new Date();
   vcard.ts = d.getTime();
   vcard.date = d.toISOString();
+  
+  if (lastvcard && vcard.fn == lastvcard.fn) {
+    console.log("rejected - we just had that one", vcard.fn);
+    return;
+  }
+  
+  console.log("accepted", vcard)
+   
+  // play audio
+  var myAudio = document.getElementById("beep"); 
+  myAudio.play();
+   
+  // keep last vcard to debounce
+  lastvcard = vcard;
+  
+  // saved to database
   db.post(vcard).then(function (response) {
-    // handle response
-    renderTable();
     
-    // prevent same one getting scanned twice.
-    setTimeout(function() {
-      interval = setInterval(captureToCanvas, 500);      
-    },1500);
+    // update UI
+    renderTable();
     
   }).catch(function (err) {
     console.log(err);
   });
 };
 
-
+// delete all data
+var deleteData = function() {
+  db.destroy().then(function (response) {
+    createDatabase(function() {
+      renderTable();
+    })
+  });
+}
 
 window.addEventListener("DOMContentLoaded", function() {
 
-  initCanvas(500,500);
+  // create database and design docs
+  createDatabase(function() { 
+    
+    // clear canvas
+    initCanvas(500,500);
 
-  document.getElementById("result").innerHTML="";
-  n=navigator;
-  document.getElementById("outdiv").innerHTML = '<video id="v" autoplay></video>';
-  v=document.getElementById("v");
+    if (navigator.getUserMedia) {
+      navigator.getUserMedia({video: true, audio: false}, success, error);
+    } else if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+      navigator.mediaDevices.getUserMedia({video: { facingMode: "environment"} , audio: false})
+          .then(success)
+          .catch(error);
+    } else if (navigator.webkitGetUserMedia) {
+      navigator.webkitGetUserMedia({video:true, audio: false}, success, error);
+    } else if (navigator.mozGetUserMedia) {
+      navigator.mozGetUserMedia({video: true, audio: false}, success, error);
+    }
+    setInterval(captureToCanvas, 500);
 
-
-  if (n.getUserMedia) {
-    n.getUserMedia({video: true, audio: false}, success, error);
-  } else if (n.mediaDevices && n.mediaDevices.getUserMedia) {
-    n.mediaDevices.getUserMedia({video: { facingMode: "environment"} , audio: false})
-        .then(success)
-        .catch(error);
-  } else if (n.webkitGetUserMedia) {
-    webkit=true;
-   // document.getElementById("extras").innerHTML = x[1 % L];
-    n.webkitGetUserMedia({video:true, audio: false}, success, error);
-  } else if (n.mozGetUserMedia) {
-    moz=true;
-    n.mozGetUserMedia({video: true, audio: false}, success, error);
-  }
-  stype=1;
-  interval= setInterval(captureToCanvas, 500);
-
-  renderTable();
+    renderTable();
+  });
 
 });

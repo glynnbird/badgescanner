@@ -21,8 +21,9 @@
       </div>
     </nav>
     
-    <div id="outdiv"></div>
-    <div id="result"></div>
+    <div>
+      <video id="v" autoplay></video>
+    </div>
     <div id="extras"></div>
     <div id="thetable"></div>    
     
@@ -47,18 +48,19 @@
           <button class="warning" onclick="replicate()">Replicate</button>
           <div id="replicationstatus"></div>
           <hr />
+          <h3>Delete all contacts</h3>
+          <button class="button error" onclick="deleteData()">! Delete Data !</button>
+          <hr />
         </section>
         <footer>
           <label for="modal_1" class="button">
-            Ok
+            Close
           </label>
         </footer>
       </article>
     </div>
     
-    <audio id="myAudio">
-      <source src="/sound/beep.mp3" type="audio/mpeg">
-    </audio>
+
     
     <canvas id="qr-canvas" width="500px" height="500px"></canvas>
 
@@ -69,5 +71,8 @@
     <script type="text/javascript" src="js/pouchdb-5.3.1.min.js"></script>
     <script type="text/javascript" src="js/badgescanner.js"></script>
 
+    <audio id="beep">
+      <source src="/sound/beep.mp3" type="audio/mpeg">
+    </audio>
   </body>
 </html>
