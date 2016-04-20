@@ -7,7 +7,7 @@ A Node.js web app that captures your web cam feed and looks for QR-codes that yo
 * a live video feed is captured from your web-cam (with your permission)
 * every 30s, snapshots of the feed are placed in a hidden canvas control
 * client-side code looks for a QR code in the image
-* if QR-code is a vCard or a URL, then the information is saved in an in-browser database (PouchDB) and presented in a table
+* if the QR-code contains a vCard or a URL, then the information is saved as JSON in an in-browser database (PouchDB) and presented in a table
 * you can optionally sync this data to an Apache CouchDB or Cloudant database
 
 Images are not retained at all and they are **not** transferred from the browser to a server for processing - all of the image processing is performed in the browser using JavaScript.
