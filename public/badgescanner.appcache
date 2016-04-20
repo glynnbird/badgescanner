@@ -1,0 +1,17 @@
+CACHE MANIFEST
+# ^ this is a the cache manifest file
+
+NETWORK:
+# allow the app to make network connections for resources it hasn't got; it isn't an offline-only app
+*
+
+CACHE:
+/
+/css/badgescanner.css
+/css/picnic.css
+/img/logo.png
+/js/badgescanner.js
+/js/pouchdb-5.3.1.min.js
+/js/qrcode.js
+/js/vcard.js
+/sound/beep.mp3
