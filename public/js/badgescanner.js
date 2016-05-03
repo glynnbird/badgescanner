@@ -87,6 +87,7 @@ var renderTable = function() {
       html += '<th>tel</th>';
       html += '<th>email</th>';
       html += '<th>url</th>';
+      html += '<th>note</th>';
       html += '</tr></thead>';
       html += '<tbody>';
       for(var i in result.rows) {
@@ -99,6 +100,7 @@ var renderTable = function() {
           html += '<td>' + d.tel + '</td>';
           html += '<td>' + d.email + '</td>';
           html += '<td>' + d.url + '</td>';
+          html += '<td><label for="modal_2" class="button notebutton" data-id="' + d._id + '" data-rev="' + d._rev + '">Note</label></td>';
           html += '</tr>';
         }
       }    
@@ -107,12 +109,37 @@ var renderTable = function() {
       html = "";
     }
     document.getElementById("thetable").innerHTML=html;
+    
+    $('.notebutton').bind("click", function(event) {
+      var b = $( this );
+      var id = b.attr("data-id");
+      var rev = b.attr("data-rev");
+      $('#noteid').val(id);
+      $('#noterev').val(rev);
+      $('#notetxt').val("");
+      db.get(id, function(err, data) {
+        if (data && data.note) {
+          $('#notetxt').val(data.note);
+        }
+      });
+    });
+    
     // handle result
   }).catch(function (err) {
     console.log("query error",err);
   });  
 };
 
+var saveNote = function() {
+  var id = $('#noteid').val();
+  var note = $('#notetxt').val();
+  db.get(id, function(err, data) {
+    if(!err) {
+      data.note = note.replace(/\r/g," ").replace(/\n/g," ");
+      db.put(data);
+    }
+  });
+}
 
 var replicate = function() {
   document.getElementById("replicationstatus").innerHTML="";

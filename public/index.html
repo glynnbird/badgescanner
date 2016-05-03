@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" manifest="badgescanner.appcache">
   <head>
-    <title>badgescanner</title>
+    <title>badgescanner 0.0.2</title>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -13,7 +13,7 @@
     <nav class="demo">
       <a href="/" class="brand">
         <img class="logo" src="/img/logo.png" />
-        <span>badgescanner</span>
+        <span>badgescanner 0.0.2</span>
       </a>
 
       <div class="menu">
@@ -60,10 +60,35 @@
       </article>
     </div>
     
+    <div class="modal">
+      <input id="modal_2" type="checkbox" />
+      <label for="modal_2" class="overlay"></label>
+      <article>
+        <header>
+          <h3>Notes</h3>
+          <label for="modal_2" class="close">&times;</label>
+        </header>
+        <section class="content">
+          <input id="noteid" type="hidden" />
+          <input id="noterev" type="hidden" />
+          <textarea id="notetxt"></textarea>
+
+          <hr />
+        </section>
+        <footer>
+          <label for="modal_2" class="button">
+            Close
+          </label>
+          <label for="modal_2" class="button error" onclick="saveNote()">Save</label>
+        </footer>
+      </article>
+    </div>
+    
 
     
     <canvas id="qr-canvas" width="500px" height="500px"></canvas>
 
+    <script type="text/javascript" src="js/zepto.js"></script>
     <script type="text/javascript" src="js/qrcode.js"></script>
     <!-- http://jsfiddle.net/ARTsinn/P2t2P/ -->
     <script type="text/javascript" src="js/vcard.js"></script>

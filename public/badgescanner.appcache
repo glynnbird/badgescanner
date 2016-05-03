@@ -11,6 +11,7 @@ CACHE:
 /css/picnic.css
 /img/logo.png
 /js/badgescanner.js
+/js/zepto.js
 /js/pouchdb-5.3.1.min.js
 /js/qrcode.js
 /js/vcard.js
