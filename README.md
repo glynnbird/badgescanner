@@ -17,3 +17,5 @@ This app is an offline-first app so once loaded, it should continue to work with
 ## Demo
 
 https://badgescanner.mybluemix.net
+
+Print out some [sample QR codes](blob/master/sample/sample-qr-codes.pdf) to try out.
