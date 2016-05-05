@@ -1,6 +1,6 @@
 # badgescanner
 
-![badgescanner gif](https://i.gyazo.com/4e908897189432735395f70cc95bf80b.gif)
+![badgescanner gif](https://i.gyazo.com/03d1bae0f0a6559f0d8fb74253269a50.gif)
 
 A Node.js web app that captures your web cam feed and looks for QR-codes that you offer to it.
 
