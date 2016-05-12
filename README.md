@@ -19,3 +19,14 @@ This app is an offline-first app so once loaded, it should continue to work with
 https://badgescanner.mybluemix.net
 
 Print out some [sample QR codes](sample/sample-qr-codes.pdf) to try out.
+
+
+## Running on Bluemix
+
+The fastest way to deploy this application to Bluemix is to click the **Deploy to Bluemix** button below.
+
+[![Deploy to Bluemix](https://deployment-tracker.mybluemix.net/stats/2956f80082fb32656c54ebba001dbdf3/button.svg)](https://bluemix.net/deploy?repository=https://github.com/ibm-cds-labs/badgescanner)
+
+https://bluemix.net/deploy?repository=https://github.com/ibm-cds-labs/badgescanner
+
+**Don't have a Bluemix account?** If you haven't already, you'll be prompted to sign up for a Bluemix account when you click the button.  Sign up, verify your email address, then return here and click the the **Deploy to Bluemix** button again. Your new credentials let you deploy to the platform and also to code online with Bluemix and Git. If you have questions about working in Bluemix, find answers in the [Bluemix Docs](https://www.ng.bluemix.net/docs/).
