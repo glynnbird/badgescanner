@@ -5,7 +5,7 @@
     "start": "node app.js"
   },
   "dependencies": {
-    "cf-deployment-tracker-client": "0.0.8",
+    "cf-deployment-tracker-client": "^0.x",
     "cfenv": "1.0.x",
     "express": "4.13.x"
   },
