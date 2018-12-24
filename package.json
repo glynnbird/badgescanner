@@ -5,12 +5,13 @@
     "start": "node app.js"
   },
   "dependencies": {
+    "cf-deployment-tracker-client": "^0.x",
     "cfenv": "1.0.x",
     "express": "4.13.x"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/glynnbird/badgescanner"
+    "url": "https://github.com/ibm-cds-labs/badgescanner"
   },
   "engines": {
     "node": "4.2.x"
